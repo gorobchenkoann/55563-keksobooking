@@ -79,7 +79,7 @@ var getRussianName = function (name) {
   } else {
     return 'Дом';
   }
-}
+};
 
 /**
  * Создает массив объектов с объявлениями.
@@ -93,7 +93,6 @@ var createObjects = function () {
   var objects = [];
 
   for (var i = 0; i < OFFER_NUMBER; i++) {
-    var randomIndex = Math.floor(Math.random() * FEATURES.length);
     var locationX = getRandomNumber(300, 900);
     var locationY = getRandomNumber(100, 500);
 
@@ -137,7 +136,7 @@ var renderFeatures = function (features) {
   }
 
   return featuresList;
-}
+};
 
 /**
  * Создает DOM-узел метки объекта.
@@ -176,7 +175,7 @@ var renderOffer = function (object) {
   offerArticle.querySelector('.popup__avatar').src = object.author.avatar;
 
   return offerArticle;
-}
+};
 
 /**
  * Создает DocumentFragment с метками объектов.
