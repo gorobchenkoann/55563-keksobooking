@@ -72,13 +72,13 @@ var getRandomArray = function (arr) {
  * @return {string} Тип жилья на русском.
  */
 var getRussianName = function (name) {
-  if (name === 'flat') {
-    return 'Квартира';
-  } else if (name === 'bungalo') {
-    return 'Бунгало';
-  } else {
-    return 'Дом';
+  switch (name) {
+    case 'flat':
+      return 'Квартира';
+    case 'bungalo':
+      return 'Бунгало';
   }
+    return 'Дом';
 };
 
 /**
@@ -148,6 +148,7 @@ var renderMapPin = function (object) {
   var pinWidth = 70;
   var pinHeight = 70;
 
+  pinElement.classList.remove('map__pin--main');
   pinElement.style.left = object.location.x - pinWidth / 2 + 'px';
   pinElement.style.top = object.location.y - pinHeight + 'px';
   pinElement.querySelector('img').src = object.author.avatar;
