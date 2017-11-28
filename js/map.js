@@ -78,7 +78,7 @@ var getRussianName = function (name) {
     case 'bungalo':
       return 'Бунгало';
   }
-    return 'Дом';
+  return 'Дом';
 };
 
 /**
