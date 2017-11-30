@@ -212,7 +212,7 @@ var renderPopup = function (object) {
 };
 
 // Делает форму и ее поля активными.
-var activateFieldset = function () {
+var activateForm = function () {
   var form = document.querySelector('.notice__form');
   var fieldsets = form.querySelectorAll('fieldset');
 
@@ -233,7 +233,7 @@ var mouseUpHandler = function () {
     var objectsFragment = showMapPins(objects);
     mapPinsBlock.appendChild(objectsFragment);
 
-    activateFieldset();
+    activateForm();
   }
 
   isMapDisabled = false;
