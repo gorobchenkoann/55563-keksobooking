@@ -293,7 +293,7 @@ var popupClose = function () {
   }
 
   activePin.classList.remove('map__pin--active');
-  document.addEventListener('keydown', popupEscPressHandler);
+  document.removeEventListener('keydown', popupEscPressHandler);
 };
 
 var popupEscPressHandler = function (evt) {
