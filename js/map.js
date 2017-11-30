@@ -276,12 +276,11 @@ var activatePin = function (currentPin) {
 
 var popupOpen = function () {
   var mapCard = document.querySelector('.map__card');
+  var closeButton = mapCard.querySelector('.popup__close');
 
-  if (mapCard) {
-    var closeButton = mapCard.querySelector('.popup__close');
-    closeButton.addEventListener('click', popupClose);
-    mapCard.classList.remove('hidden');
-  }
+  mapCard.classList.remove('hidden');
+  closeButton.addEventListener('click', popupClose);
+
   document.addEventListener('keydown', popupEscPressHandler);
 };
 
@@ -302,6 +301,9 @@ var popupEscPressHandler = function (evt) {
   }
 };
 
+// Массив объектов объявлений.
+var objects = createObjects();
+
 // Карта и форма неактивны по умолчанию.
 var isMapDisabled = true;
 
@@ -310,17 +312,7 @@ var mapPinsBlock = document.querySelector('.map__pins');
 
 // Метка для перетаскивания.
 var mainPin = document.querySelector('.map__pin--main');
-
-// Массив объектов объявлений.
-var objects = createObjects();
-
 mainPin.addEventListener('mouseup', mouseUpHandler);
 
 var activePin = null;
 mapPinsBlock.addEventListener('click', pinClickHandler);
-
-// var closeButton = document.querySelector('.popup__close');
-// closeButton.addEventListener('click', popupClose);
-
-// var offer = renderOffer(objects[0]);
-// mapWindow.insertBefore(offer, mapPinsBlock);
