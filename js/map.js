@@ -146,26 +146,31 @@ var renderFeatures = function (features) {
 
 /**
  * Создает DOM-узел метки объекта.
- * @param  {Oblect} object
- * @return {HTMLElement} DOM-узел метки.
+ * @param  {Object} object
+ * @return {Node} DOM-узел метки.
  */
-var renderMapPin = function (object) {
+var renderMapPin = function () {
   var template = document.querySelector('template').content;
-  var pinElement = template.querySelector('.map__pin').cloneNode(true);
+  var pin = template.querySelector('.map__pin').cloneNode(true);
   var pinCircleHeight = 44;
   var pinArrowHeight = 18;
 
-  pinElement.style.left = object.location.x + 'px';
-  pinElement.style.top = object.location.y - (pinCircleHeight / 2 + pinArrowHeight) + 'px';
-  pinElement.querySelector('img').src = object.author.avatar;
+  return function (object, index) {
+    var pinElement = pin.cloneNode(true);
 
-  return pinElement;
-};
+    pinElement.style.left = object.location.x + 'px';
+    pinElement.style.top = object.location.y - (pinCircleHeight / 2 + pinArrowHeight) + 'px';
+    pinElement.querySelector('img').src = object.author.avatar;
+    pinElement.dataset.index = index;
+
+    return pinElement;
+  };
+}();
 
 /**
  * Создает DOM-узел описания объекта.
  * @param  {Object} object
- * @return {HTMLElement} DOM-узел описания объекта.
+ * @return {Node} DOM-узел описания объекта.
  */
 var renderOffer = function (object) {
   var template = document.querySelector('template').content;
@@ -194,44 +199,67 @@ var showMapPins = function (objects) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < objects.length; i++) {
-    fragment.appendChild(renderMapPin(objects[i]));
-    fragment.appendChild(renderOffer(objects[i]));
+    fragment.appendChild(renderMapPin(objects[i], i));
   }
+
   return fragment;
 };
 
-/**
- * Делает поля формы активными или неактивными в зависимости от входного значения value.
- * @param  {Array} arr
- * @param  {Boolean} value
- */
-var activateFieldset = function (arr, value) {
-  arr.forEach(function (item) {
-    item.disabled = value;
-  });
+var renderPopup = function (object) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(renderOffer(object));
+  return fragment;
+};
+
+// Делает форму и ее поля активными.
+var activateFieldset = function () {
+  var form = document.querySelector('.notice__form');
+  var fieldsets = form.querySelectorAll('fieldset');
+
+  form.classList.remove('notice__form--disabled');
+
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].disabled = false;
+  }
 };
 
 var mouseUpHandler = function () {
-  mapWindow.classList.remove('map--faded');
+  if (isMapDisabled) {
+    // Показывает блок карты.
+    var mapWindow = document.querySelector('.map');
+    mapWindow.classList.remove('map--faded');
 
-  // Отрисовывает метки похожих объектов.
-  var objectsFragment = showMapPins(objects);
-  mapPinsBlock.appendChild(objectsFragment);
+    // Отрисовывает метки похожих объектов.
+    var objectsFragment = showMapPins(objects);
+    mapPinsBlock.appendChild(objectsFragment);
 
-  // Делает поля форму и ее поля активными.
-  form.classList.remove('notice__form--disabled');
-  activateFieldset(fieldsets, false);
+    activateFieldset();
+  }
+
+  isMapDisabled = false;
 };
 
 /**
  * Обработчик события нажатия на метку.
- * @param  {?} evt
+ * Нажатие на метку с модификатором --main вызывает только ее активацию,
+ * но не появление всплывающего окна.
+ * @param  {Event} evt
  */
 var pinClickHandler = function (evt) {
   var target = evt.target;
   var currentPin = target.closest('.map__pin');
 
-  activatePin(currentPin);
+  if (currentPin) {
+    activatePin(currentPin);
+
+    if (!currentPin.classList.contains('map__pin--main')) {
+      var pinIndex = currentPin.dataset.index;
+      var popup = renderPopup(objects[pinIndex]);
+
+      mapPinsBlock.appendChild(popup);
+      popupOpen();
+    }
+  }
 };
 
 /**
@@ -244,20 +272,26 @@ var activatePin = function (currentPin) {
   }
   activePin = currentPin;
   activePin.classList.add('map__pin--active');
-  popupOpen();
 };
 
 var popupOpen = function () {
-  var mapPopup = document.querySelector('.map__pin--active + .map__card');
-  mapPopup.classList.remove('hidden');
+  var mapCard = document.querySelector('.map__card');
+
+  if (mapCard) {
+    var closeButton = mapCard.querySelector('.popup__close');
+    closeButton.addEventListener('click', popupClose);
+    mapCard.classList.remove('hidden');
+  }
   document.addEventListener('keydown', popupEscPressHandler);
 };
 
 var popupClose = function () {
-  var mapPopup = document.querySelectorAll('.map__card');
-  mapPopup.forEach(function (i) {
-    i.classList.add('hidden');
-  });
+  var mapCard = document.querySelector('.map__card');
+
+  if (mapCard) {
+    mapPinsBlock.removeChild(mapCard);
+  }
+
   activePin.classList.remove('map__pin--active');
   document.addEventListener('keydown', popupEscPressHandler);
 };
@@ -268,13 +302,8 @@ var popupEscPressHandler = function (evt) {
   }
 };
 
-// Делает поля формы неактивными.
-var form = document.querySelector('.notice__form');
-var fieldsets = form.querySelectorAll('fieldset');
-activateFieldset(fieldsets, true);
-
-// Блок карты.
-var mapWindow = document.querySelector('.map');
+// Карта и форма неактивны по умолчанию.
+var isMapDisabled = true;
 
 // Блок меткок объектов.
 var mapPinsBlock = document.querySelector('.map__pins');
@@ -290,8 +319,8 @@ mainPin.addEventListener('mouseup', mouseUpHandler);
 var activePin = null;
 mapPinsBlock.addEventListener('click', pinClickHandler);
 
-var closeButton = document.querySelector('.popup__close');
-closeButton.addEventListener('click', popupClose);
+// var closeButton = document.querySelector('.popup__close');
+// closeButton.addEventListener('click', popupClose);
 
 // var offer = renderOffer(objects[0]);
 // mapWindow.insertBefore(offer, mapPinsBlock);
