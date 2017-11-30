@@ -306,13 +306,12 @@ var objects = createObjects();
 
 // Карта и форма неактивны по умолчанию.
 var isMapDisabled = true;
-
-// Блок меткок объектов.
-var mapPinsBlock = document.querySelector('.map__pins');
+var activePin = null;
 
 // Метка для перетаскивания.
 var mainPin = document.querySelector('.map__pin--main');
 mainPin.addEventListener('mouseup', mouseUpHandler);
 
-var activePin = null;
+// Блок меткок объектов.
+var mapPinsBlock = document.querySelector('.map__pins');
 mapPinsBlock.addEventListener('click', pinClickHandler);
