@@ -37,12 +37,6 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var ESC_KEYCODE = 27;
 
 /**
- * Код клавиши Enter.
- * @type {Number}
- */
-var ENTER_KEYCODE = 13;
-
-/**
  * @param  {number} min
  * @param  {number} max
  * @return {number} Случайное число в заданном диапазоне.
@@ -238,11 +232,11 @@ var pinClickHandler = function (evt) {
   var currentPin = target.closest('.map__pin');
 
   activatePin(currentPin);
-}
+};
 
 /**
  * Добавляет модификатор --active активной метке.
- * @param  {HTMLElement}
+ * @param  {HTMLElement} currentPin
  */
 var activatePin = function (currentPin) {
   if (activePin) {
@@ -258,7 +252,7 @@ var popupOpen = function () {
   var mapPopup = document.querySelector('.map__pin--active + .map__card');
   mapPopup.classList.remove('hidden');
   document.addEventListener('keydown', popupEscPressHandler);
-}
+};
 
 var popupClose = function () {
   var mapPopup = document.querySelectorAll('.map__card');
@@ -266,7 +260,7 @@ var popupClose = function () {
     i.classList.add('hidden');
   });
   document.addEventListener('keydown', popupEscPressHandler);
-}
+};
 
 var popupEscPressHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -284,9 +278,6 @@ var mapWindow = document.querySelector('.map');
 
 // Блок меткок объектов.
 var mapPinsBlock = document.querySelector('.map__pins');
-
-// Метки объектов.
-var mapPins = document.querySelectorAll('.map__pin');
 
 // Метка для перетаскивания.
 var mainPin = document.querySelector('.map__pin--main');
