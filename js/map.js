@@ -241,7 +241,6 @@ var pinClickHandler = function (evt) {
 var activatePin = function (currentPin) {
   if (activePin) {
     popupClose();
-    activePin.classList.remove('map__pin--active');
   }
   activePin = currentPin;
   activePin.classList.add('map__pin--active');
@@ -259,6 +258,7 @@ var popupClose = function () {
   mapPopup.forEach(function (i) {
     i.classList.add('hidden');
   });
+  activePin.classList.remove('map__pin--active');
   document.addEventListener('keydown', popupEscPressHandler);
 };
 
