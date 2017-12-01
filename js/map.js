@@ -223,20 +223,20 @@ var activateForm = function () {
   }
 };
 
-var mouseUpHandler = function () {
-  if (isMapDisabled) {
-    // Показывает блок карты.
-    var mapWindow = document.querySelector('.map');
-    mapWindow.classList.remove('map--faded');
+var mouseUpHandler = function (evt) {
+  // Удаляет обработчик события mouseup у главной метки.
+  var pin = evt.currentTarget;
+  pin.removeEventListener('mouseup', mouseUpHandler);
 
-    // Отрисовывает метки похожих объектов.
-    var objectsFragment = showMapPins(objects);
-    mapPinsBlock.appendChild(objectsFragment);
+  // Показывает блок карты.
+  var mapWindow = document.querySelector('.map');
+  mapWindow.classList.remove('map--faded');
 
-    activateForm();
-  }
+  // Отрисовывает метки похожих объектов.
+  var objectsFragment = showMapPins(objects);
+  mapPinsBlock.appendChild(objectsFragment);
 
-  isMapDisabled = false;
+  activateForm();
 };
 
 /**
@@ -263,15 +263,18 @@ var pinClickHandler = function (evt) {
 };
 
 /**
- * Добавляет модификатор --active активной метке.
+ * Добавляет новую активную метку, убирает предыдущую.
  * @param  {HTMLElement} currentPin
  */
 var activatePin = function (currentPin) {
+  var activePin = mapPinsBlock.querySelector('.map__pin--active');
+
   if (activePin) {
+    activePin.classList.remove('map__pin--active');
     popupClose();
   }
-  activePin = currentPin;
-  activePin.classList.add('map__pin--active');
+
+  currentPin.classList.add('map__pin--active');
 };
 
 var popupOpen = function () {
@@ -291,7 +294,6 @@ var popupClose = function () {
     mapPinsBlock.removeChild(mapCard);
   }
 
-  activePin.classList.remove('map__pin--active');
   document.removeEventListener('keydown', popupEscPressHandler);
 };
 
@@ -303,10 +305,6 @@ var popupEscPressHandler = function (evt) {
 
 // Массив объектов объявлений.
 var objects = createObjects();
-
-// Карта и форма неактивны по умолчанию.
-var isMapDisabled = true;
-var activePin = null;
 
 // Метка для перетаскивания.
 var mainPin = document.querySelector('.map__pin--main');
