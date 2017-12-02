@@ -1,3 +1,5 @@
+'use strict';
+
 var titleInput = document.getElementById('title');
 var timeinInput = document.getElementById('timein');
 var timeoutInput = document.getElementById('timeout');
@@ -14,7 +16,7 @@ var capacityInput = document.getElementById('capacity');
 var syncInputs = function (firstInput, secInput) {
   var firstInputValue = firstInput.value;
   secInput.value = firstInputValue;
-}
+};
 
 /**
  * При изменении значения первого поля, изменяет минимальное значение второго поля.
@@ -35,13 +37,13 @@ var syncMinPrice = function (type, price) {
     case 'palace':
       price.min = 10000;
       break;
-  };
+  }
 };
 
 /**
  * При изменении значения первого поля, меняет значение второго.
- * @param  {rooms}
- * @param  {capacity}
+ * @param  {[type]} rooms
+ * @param  {[type]} capacity
  */
 var syncCapacity = function (rooms, capacity) {
   switch (rooms.value) {
@@ -57,7 +59,7 @@ var syncCapacity = function (rooms, capacity) {
     case '100':
       capacity.value = '0';
       break;
-  };
+  }
 };
 
 // Дополнительная валидация для браузеров, не поддерживающих minlength.
