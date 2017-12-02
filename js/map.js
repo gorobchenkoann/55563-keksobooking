@@ -31,6 +31,12 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 /**
+ * Код клавиши Escape.
+ * @type {Number}
+ */
+var ESC_KEYCODE = 27;
+
+/**
  * @param  {number} min
  * @param  {number} max
  * @return {number} Случайное число в заданном диапазоне.
@@ -140,26 +146,31 @@ var renderFeatures = function (features) {
 
 /**
  * Создает DOM-узел метки объекта.
- * @param  {Oblect} object
- * @return {HTMLElement} DOM-узел метки.
+ * @param  {Object} object
+ * @return {Node} DOM-узел метки.
  */
-var renderMapPin = function (object) {
-  var pinElement = document.querySelector('.map__pin').cloneNode(true);
-  var pinWidth = 70;
-  var pinHeight = 70;
+var renderMapPin = function () {
+  var template = document.querySelector('template').content;
+  var pin = template.querySelector('.map__pin').cloneNode(true);
+  var pinCircleHeight = 44;
+  var pinArrowHeight = 18;
 
-  pinElement.classList.remove('map__pin--main');
-  pinElement.style.left = object.location.x - pinWidth / 2 + 'px';
-  pinElement.style.top = object.location.y - pinHeight + 'px';
-  pinElement.querySelector('img').src = object.author.avatar;
+  return function (object, index) {
+    var pinElement = pin.cloneNode(true);
 
-  return pinElement;
-};
+    pinElement.style.left = object.location.x + 'px';
+    pinElement.style.top = object.location.y - (pinCircleHeight / 2 + pinArrowHeight) + 'px';
+    pinElement.querySelector('img').src = object.author.avatar;
+    pinElement.dataset.index = index;
+
+    return pinElement;
+  };
+}();
 
 /**
  * Создает DOM-узел описания объекта.
  * @param  {Object} object
- * @return {HTMLElement} DOM-узел описания объекта.
+ * @return {Node} DOM-узел описания объекта.
  */
 var renderOffer = function (object) {
   var template = document.querySelector('template').content;
@@ -174,6 +185,7 @@ var renderOffer = function (object) {
   offerArticle.querySelector('.popup__features').innerHTML = renderFeatures(object.offer.features);
   offerArticle.querySelector('p:nth-of-type(5)').textContent = object.offer.description;
   offerArticle.querySelector('.popup__avatar').src = object.author.avatar;
+  offerArticle.classList.add('hidden');
 
   return offerArticle;
 };
@@ -187,24 +199,117 @@ var showMapPins = function (objects) {
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < objects.length; i++) {
-    fragment.appendChild(renderMapPin(objects[i]));
+    fragment.appendChild(renderMapPin(objects[i], i));
   }
 
   return fragment;
 };
 
-// Показывает окно с похожими объектами.
-var mapWindow = document.querySelector('.map');
-mapWindow.classList.remove('map--faded');
+var renderPopup = function (object) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(renderOffer(object));
+  return fragment;
+};
 
-// Блок метки объекта.
-var mapPin = document.querySelector('.map__pins');
+// Делает форму и ее поля активными.
+var activateForm = function () {
+  var form = document.querySelector('.notice__form');
+  var fieldsets = form.querySelectorAll('fieldset');
 
-// Отрисовывает метки похожих объектов.
+  form.classList.remove('notice__form--disabled');
+
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].disabled = false;
+  }
+};
+
+var mouseUpHandler = function (evt) {
+  // Удаляет обработчик события mouseup у главной метки.
+  var pin = evt.currentTarget;
+  pin.removeEventListener('mouseup', mouseUpHandler);
+
+  // Показывает блок карты.
+  var mapWindow = document.querySelector('.map');
+  mapWindow.classList.remove('map--faded');
+
+  // Отрисовывает метки похожих объектов.
+  var objectsFragment = showMapPins(objects);
+  mapPinsBlock.appendChild(objectsFragment);
+
+  activateForm();
+};
+
+/**
+ * Обработчик события нажатия на метку.
+ * Нажатие на метку с модификатором --main вызывает только ее активацию,
+ * но не появление всплывающего окна.
+ * @param  {Event} evt
+ */
+var pinClickHandler = function (evt) {
+  var target = evt.target;
+  var currentPin = target.closest('.map__pin');
+
+  if (currentPin) {
+    activatePin(currentPin);
+
+    if (!currentPin.classList.contains('map__pin--main')) {
+      var pinIndex = currentPin.dataset.index;
+      var popup = renderPopup(objects[pinIndex]);
+
+      mapPinsBlock.appendChild(popup);
+      popupOpen();
+    }
+  }
+};
+
+/**
+ * Добавляет новую активную метку, убирает предыдущую.
+ * @param  {HTMLElement} currentPin
+ */
+var activatePin = function (currentPin) {
+  var activePin = mapPinsBlock.querySelector('.map__pin--active');
+
+  if (activePin) {
+    activePin.classList.remove('map__pin--active');
+    popupClose();
+  }
+
+  currentPin.classList.add('map__pin--active');
+};
+
+var popupOpen = function () {
+  var mapCard = document.querySelector('.map__card');
+  var closeButton = mapCard.querySelector('.popup__close');
+
+  mapCard.classList.remove('hidden');
+  closeButton.addEventListener('click', popupClose);
+
+  document.addEventListener('keydown', popupEscPressHandler);
+};
+
+var popupClose = function () {
+  var mapCard = document.querySelector('.map__card');
+
+  if (mapCard) {
+    mapPinsBlock.removeChild(mapCard);
+  }
+
+  document.removeEventListener('keydown', popupEscPressHandler);
+};
+
+var popupEscPressHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    popupClose();
+  }
+};
+
+// Массив объектов объявлений.
 var objects = createObjects();
-var objectsFragment = showMapPins(objects);
-mapPin.appendChild(objectsFragment);
 
-// Отрисовывает описание первого объекта.
-var offer = renderOffer(objects[0]);
-mapWindow.insertBefore(offer, mapPin);
+// Метка для перетаскивания.
+var mainPin = document.querySelector('.map__pin--main');
+mainPin.addEventListener('mouseup', mouseUpHandler);
+
+// Блок меткок объектов.
+var mapPinsBlock = document.querySelector('.map__pins');
+mapPinsBlock.addEventListener('click', pinClickHandler);
