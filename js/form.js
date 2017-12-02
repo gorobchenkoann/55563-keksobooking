@@ -1,5 +1,6 @@
 'use strict';
 
+var form = document.querySelector('.notice__form');
 var titleInput = document.getElementById('title');
 var timeinInput = document.getElementById('timein');
 var timeoutInput = document.getElementById('timeout');
@@ -16,6 +17,8 @@ var capacityInput = document.getElementById('capacity');
 var syncInputs = function (firstInput, secInput) {
   var firstInputValue = firstInput.value;
   secInput.value = firstInputValue;
+
+  return secInput;
 };
 
 /**
@@ -38,6 +41,8 @@ var syncMinPrice = function (type, price) {
       price.min = 10000;
       break;
   }
+
+  return price;
 };
 
 /**
@@ -60,17 +65,33 @@ var syncCapacity = function (rooms, capacity) {
       capacity.value = '0';
       break;
   }
+
+  return capacity;
 };
 
-// Дополнительная валидация для браузеров, не поддерживающих minlength.
-titleInput.addEventListener('input', function (evt) {
-  var target = evt.target;
-  if (target.value.length < 30) {
-    target.setCustomValidity('Минимально допустимое количество символов: 30. Длина текста сейчас: ' + target.value.length + '.');
-  } else {
-    target.setCustomValidity('');
+var checkTitle = function (title) {
+  if (title.validity.tooShort) {
+    title.setCustomValidity('Заголовок должен состоять минимум из 30 символов.');
+  } else if (title.validity.tooLong) {
+    title.setCustomValidity('Заголовок должен состоять максимум из 100 символов.');
+  } else if (title.validity.valueMissing) {
+    title.setCustomValidity('Обязательное поле.');
   }
-});
+
+  return title;
+};
+
+var checkPrice = function (price) {
+  if (price.validity.rangeUnderflow) {
+    price.setCustomValidity('Минимальное значение не может быть меньше ' + price.min + '.');
+  } else if (price.validity.rangeOverflow) {
+    price.setCustomValidity('Максимальное значение не может быть больше ' + price.max + '.');
+  } else if (price.validity.valueMissing) {
+    price.setCustomValidity('Обязательное поле.');
+  }
+
+  return price;
+}
 
 timeinInput.addEventListener('change', function () {
   syncInputs(timeinInput, timeoutInput);
@@ -87,3 +108,22 @@ typeInput.addEventListener('change', function () {
 roomNumberInput.addEventListener('change', function () {
   syncCapacity(roomNumberInput, capacityInput);
 });
+
+form.addEventListener('invalid', function (evt) {
+  if (evt.target.id === 'title') {
+    checkTitle(evt.target);
+  } else if (evt.target.id === 'price') {
+    checkPrice(evt.target);
+  }
+});
+
+// Дополнительная валидация заголовка для браузеров, не поддерживающих minlength.
+titleInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < 30) {
+    target.setCustomValidity('Минимально допустимое количество символов: 30. Длина текста сейчас: ' + target.value.length + '.');
+  } else {
+    target.setCustomValidity('');
+  }
+});
+
