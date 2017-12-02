@@ -134,19 +134,19 @@ var createObjects = function () {
  * @param  {Array} features
  * @return {Node} DOM-узел списка удобств.
  */
-var renderFeatures = function (features) {
-  var template = document.querySelector('template').content;
-  var featuresList = template.querySelector('.popup__features').cloneNode();
-  featuresList.innerHTML = '';
+// var renderFeatures = function (features) {
+//   var template = document.querySelector('template').content;
+//   var featuresList = template.querySelector('.popup__features').cloneNode();
+//   featuresList.innerHTML = '';
 
-  for (var i = 0; i < features.length; i++) {
-    var li = document.createElement('li');
-    li.classList.add('feature', 'feature--' + features[i]);
-    featuresList.appendChild(li);
-  }
+//   for (var i = 0; i < features.length; i++) {
+//     var li = document.createElement('li');
+//     li.classList.add('feature', 'feature--' + features[i]);
+//     featuresList.appendChild(li);
+//   }
 
-  return featuresList;
-};
+//   return featuresList;
+// };
 
 /**
  * Создает DOM-узел метки объекта.
@@ -182,7 +182,11 @@ var renderOffer = function (object) {
   var featuresList = offerArticle.querySelector('.popup__features');
   featuresList.innerHTML = '';
 
-  featuresList.appendChild(renderFeatures(object.offer.features));
+  for (var i = 0; i < object.offer.features.length; i++) {
+    var li = document.createElement('li');
+    li.classList.add('feature', 'feature--' + object.offer.features[i]);
+    featuresList.appendChild(li);
+  }
 
   offerArticle.querySelector('h3').textContent = object.offer.title;
   offerArticle.querySelector('p').textContent = object.offer.address;
