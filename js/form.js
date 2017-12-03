@@ -13,6 +13,7 @@ var capacityInput = document.getElementById('capacity');
  * При изменении значения первого поля, изменяет значение второго поля на такое же.
  * @param  {[type]} firstInput
  * @param  {[type]} secInput
+ * @return {[type]} Измененное второе поле.
  */
 var syncInputs = function (firstInput, secInput) {
   var firstInputValue = firstInput.value;
@@ -25,6 +26,7 @@ var syncInputs = function (firstInput, secInput) {
  * При изменении значения первого поля, изменяет минимальное значение второго поля.
  * @param  {[type]} type
  * @param  {[type]} price
+ * @return {[type]} Измененное поле цены.
  */
 var syncMinPrice = function (type, price) {
   var minPrice = {
@@ -32,7 +34,7 @@ var syncMinPrice = function (type, price) {
     'flat': 1000,
     'house': 5000,
     'palace': 10000
-  }
+  };
   var typeValue = type.value;
   price.min = minPrice[typeValue];
 
@@ -43,6 +45,7 @@ var syncMinPrice = function (type, price) {
  * При изменении значения первого поля, меняет значение второго.
  * @param  {[type]} rooms
  * @param  {[type]} capacity
+ * @return {[type]} Измененное значение второго поля.
  */
 var syncCapacity = function (rooms, capacity) {
   switch (rooms.value) {
@@ -85,7 +88,7 @@ var checkPrice = function (price) {
   }
 
   return price;
-}
+};
 
 timeinInput.addEventListener('change', function () {
   syncInputs(timeinInput, timeoutInput);

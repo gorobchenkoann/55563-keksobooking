@@ -82,7 +82,7 @@ var getRussianName = function (name) {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
     'house': 'Дом'
-  }
+  };
   var russianName = traslation[name];
 
   return russianName;
