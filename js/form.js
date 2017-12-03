@@ -48,19 +48,17 @@ var syncMinPrice = function (type, price) {
  * @return {[type]} Измененное значение второго поля.
  */
 var syncCapacity = function (rooms, capacity) {
-  switch (rooms.value) {
-    case '1':
-      capacity.value = '1';
-      break;
-    case '2':
-      capacity.value = '2';
-      break;
-    case '3':
-      capacity.value = '3';
-      break;
-    case '100':
+  var roomsNumber = rooms.value;
+  var guestsNumbers = capacity.options;
+
+  for (var i = 0; i < guestsNumbers.length; i++) {
+    if (roomsNumber === '100') {
+      guestsNumbers[i].disabled = guestsNumbers[i].value !== '100';
       capacity.value = '0';
-      break;
+    } else {
+      guestsNumbers[i].disabled = (guestsNumbers[i].value > roomsNumber || guestsNumbers[i].value === '0');
+      capacity.value = roomsNumber;
+    }
   }
 
   return capacity;
@@ -123,4 +121,3 @@ titleInput.addEventListener('input', function (evt) {
     target.setCustomValidity('');
   }
 });
-
