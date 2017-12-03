@@ -27,20 +27,14 @@ var syncInputs = function (firstInput, secInput) {
  * @param  {[type]} price
  */
 var syncMinPrice = function (type, price) {
-  switch (type.value) {
-    case 'bungalo':
-      price.min = 0;
-      break;
-    case 'flat':
-      price.min = 1000;
-      break;
-    case 'house':
-      price.min = 5000;
-      break;
-    case 'palace':
-      price.min = 10000;
-      break;
+  var minPrice = {
+    'bungalo': 0,
+    'flat': 1000,
+    'house': 5000,
+    'palace': 10000
   }
+  var typeValue = type.value;
+  price.min = minPrice[typeValue];
 
   return price;
 };
