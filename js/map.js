@@ -78,13 +78,14 @@ var getRandomArray = function (arr) {
  * @return {string} Тип жилья на русском.
  */
 var getRussianName = function (name) {
-  switch (name) {
-    case 'flat':
-      return 'Квартира';
-    case 'bungalo':
-      return 'Бунгало';
+  var traslation = {
+    'flat': 'Квартира',
+    'bungalo': 'Бунгало',
+    'house': 'Дом'
   }
-  return 'Дом';
+  var russianName = traslation[name];
+
+  return russianName;
 };
 
 /**
