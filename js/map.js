@@ -135,19 +135,15 @@ var createObjects = function () {
  * @param  {Array} features
  * @return {Node} DOM-узел списка удобств.
  */
-// var renderFeatures = function (features) {
-//   var template = document.querySelector('template').content;
-//   var featuresList = template.querySelector('.popup__features').cloneNode();
-//   featuresList.innerHTML = '';
+var renderFeatures = function (features) {
+  var featuresList = '';
 
-//   for (var i = 0; i < features.length; i++) {
-//     var li = document.createElement('li');
-//     li.classList.add('feature', 'feature--' + features[i]);
-//     featuresList.appendChild(li);
-//   }
+  for (var i = 0; i < features.length; i++) {
+    featuresList += '<li class="feature feature--' + features[i] + '"></li>';
+  }
 
-//   return featuresList;
-// };
+  return featuresList;
+};
 
 /**
  * Создает DOM-узел метки объекта.
@@ -180,14 +176,6 @@ var renderMapPin = function () {
 var renderOffer = function (object) {
   var template = document.querySelector('template').content;
   var offerArticle = template.querySelector('.map__card').cloneNode(true);
-  var featuresList = offerArticle.querySelector('.popup__features');
-  featuresList.innerHTML = '';
-
-  for (var i = 0; i < object.offer.features.length; i++) {
-    var li = document.createElement('li');
-    li.classList.add('feature', 'feature--' + object.offer.features[i]);
-    featuresList.appendChild(li);
-  }
 
   offerArticle.querySelector('h3').textContent = object.offer.title;
   offerArticle.querySelector('p').textContent = object.offer.address;
@@ -195,7 +183,7 @@ var renderOffer = function (object) {
   offerArticle.querySelector('h4').textContent = getRussianName(object.offer.type);
   offerArticle.querySelector('p:nth-of-type(3)').textContent = object.offer.rooms + ' для ' + object.offer.guests + ' гостей';
   offerArticle.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
-  // offerArticle.querySelector('.popup__features').innerHTML = renderFeatures(object.offer.features);
+  offerArticle.querySelector('.popup__features').innerHTML = renderFeatures(object.offer.features);
   offerArticle.querySelector('p:nth-of-type(5)').textContent = object.offer.description;
   offerArticle.querySelector('.popup__avatar').src = object.author.avatar;
   offerArticle.classList.add('hidden');

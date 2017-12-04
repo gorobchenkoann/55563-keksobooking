@@ -1,6 +1,7 @@
 'use strict';
 
 var form = document.querySelector('.notice__form');
+var submit = form.querySelector('.form__submit');
 var titleInput = document.getElementById('title');
 var timeinInput = document.getElementById('timein');
 var timeoutInput = document.getElementById('timeout');
@@ -64,6 +65,18 @@ var syncCapacity = function (rooms, capacity) {
   return capacity;
 };
 
+var checkRooms = function (rooms) {
+  var guests = document.getElementById('capacity');
+  var guestsValue = guests.options[guests.selectedIndex].value;
+  var roomsValue = rooms.value;
+
+  if (roomsValue === '1') {
+    return guestsValue === roomsValue;
+  }
+
+  return true;
+};
+
 var checkTitle = function (title) {
   if (title.validity.tooShort) {
     title.setCustomValidity('Заголовок должен состоять минимум из 30 символов.');
@@ -119,5 +132,13 @@ titleInput.addEventListener('input', function (evt) {
     target.setCustomValidity('Минимально допустимое количество символов: 30. Длина текста сейчас: ' + target.value.length + '.');
   } else {
     target.setCustomValidity('');
+  }
+});
+
+submit.addEventListener('click', function () {
+  if (checkRooms(roomNumberInput) === false) {
+    capacityInput.setCustomValidity('Недопустимое значение.');
+  } else {
+    capacityInput.setCustomValidity('');
   }
 });
