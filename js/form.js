@@ -1,7 +1,5 @@
 'use strict';
 
-var form = document.querySelector('.notice__form');
-var submit = form.querySelector('.form__submit');
 var titleInput = document.getElementById('title');
 var timeinInput = document.getElementById('timein');
 var timeoutInput = document.getElementById('timeout');
@@ -63,30 +61,6 @@ var syncCapacity = function (rooms, capacity) {
   }
 
   return capacity;
-};
-
-var checkTitle = function (title) {
-  if (title.validity.tooShort) {
-    title.setCustomValidity('Заголовок должен состоять минимум из 30 символов.');
-  } else if (title.validity.tooLong) {
-    title.setCustomValidity('Заголовок должен состоять максимум из 100 символов.');
-  } else if (title.validity.valueMissing) {
-    title.setCustomValidity('Обязательное поле.');
-  }
-
-  return title;
-};
-
-var checkPrice = function (price) {
-  if (price.validity.rangeUnderflow) {
-    price.setCustomValidity('Минимальное значение не может быть меньше ' + price.min + '.');
-  } else if (price.validity.rangeOverflow) {
-    price.setCustomValidity('Максимальное значение не может быть больше ' + price.max + '.');
-  } else if (price.validity.valueMissing) {
-    price.setCustomValidity('Обязательное поле.');
-  }
-
-  return price;
 };
 
 timeinInput.addEventListener('change', function () {
