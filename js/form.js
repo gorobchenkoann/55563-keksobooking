@@ -65,18 +65,6 @@ var syncCapacity = function (rooms, capacity) {
   return capacity;
 };
 
-var checkRooms = function (rooms) {
-  var guests = document.getElementById('capacity');
-  var guestsValue = guests.options[guests.selectedIndex].value;
-  var roomsValue = rooms.value;
-
-  if (roomsValue === '1') {
-    return guestsValue === roomsValue;
-  }
-
-  return true;
-};
-
 var checkTitle = function (title) {
   if (title.validity.tooShort) {
     title.setCustomValidity('Заголовок должен состоять минимум из 30 символов.');
@@ -117,14 +105,6 @@ roomNumberInput.addEventListener('change', function () {
   syncCapacity(roomNumberInput, capacityInput);
 });
 
-form.addEventListener('invalid', function (evt) {
-  if (evt.target.id === 'title') {
-    checkTitle(evt.target);
-  } else if (evt.target.id === 'price') {
-    checkPrice(evt.target);
-  }
-});
-
 // Дополнительная валидация заголовка для браузеров, не поддерживающих minlength.
 titleInput.addEventListener('input', function (evt) {
   var target = evt.target;
@@ -135,10 +115,5 @@ titleInput.addEventListener('input', function (evt) {
   }
 });
 
-submit.addEventListener('click', function () {
-  if (checkRooms(roomNumberInput) === false) {
-    capacityInput.setCustomValidity('Недопустимое значение.');
-  } else {
-    capacityInput.setCustomValidity('');
-  }
-});
+// Синхронизация количества комнат и гостей.
+syncCapacity(roomNumberInput, capacityInput);
