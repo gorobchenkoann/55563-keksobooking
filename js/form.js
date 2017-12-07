@@ -66,19 +66,19 @@
 
   timeinInput.addEventListener('change', function () {
     syncInputs(timeinInput, timeoutInput);
-  });
+  }, true);
 
   timeoutInput.addEventListener('change', function () {
     syncInputs(timeoutInput, timeinInput);
-  });
+  }, true);
 
   typeInput.addEventListener('change', function () {
     syncMinPrice(typeInput, priceInput);
-  });
+  }, true);
 
   roomNumberInput.addEventListener('change', function () {
     syncCapacity(roomNumberInput, capacityInput);
-  });
+  }, true);
 
   // Дополнительная валидация заголовка для браузеров, не поддерживающих minlength.
   titleInput.addEventListener('input', function (evt) {
@@ -88,7 +88,7 @@
     } else {
       target.setCustomValidity('');
     }
-  });
+  }, true);
 
   // Синхронизация количества комнат и гостей.
   syncCapacity(roomNumberInput, capacityInput);

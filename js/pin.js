@@ -6,7 +6,7 @@
    * @param  {Object} object
    * @return {Node} DOM-узел метки.
    */
-  var render = function () {
+  var render = (function () {
     var template = document.querySelector('template').content;
     var pin = template.querySelector('.map__pin').cloneNode(true);
     var pinCircleHeight = 44;
@@ -22,7 +22,7 @@
 
       return pinElement;
     };
-  }();
+  })();
 
   window.pin = {
     /**

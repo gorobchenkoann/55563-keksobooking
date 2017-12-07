@@ -7,12 +7,6 @@
    */
   var ESC_KEYCODE = 27;
 
-  // Главная меткаю
-  var mainPin = document.querySelector('.map__pin--main');
-
-  // Блок меткок объектов.
-  var mapPinsBlock = document.querySelector('.map__pins');
-
   // Делает форму и ее поля активными.
   var activateForm = function () {
     var form = document.querySelector('.notice__form');
@@ -22,6 +16,47 @@
 
     for (var i = 0; i < fieldsets.length; i++) {
       fieldsets[i].disabled = false;
+    }
+  };
+
+  /**
+   * Добавляет новую активную метку, убирает предыдущую.
+   * @param  {HTMLElement} currentPin
+   */
+  var activatePin = function (currentPin) {
+    var activePin = mapPinsBlock.querySelector('.map__pin--active');
+
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+      popupClose();
+    }
+
+    currentPin.classList.add('map__pin--active');
+  };
+
+  var popupOpen = function () {
+    var mapCard = document.querySelector('.map__card');
+    var closeButton = mapCard.querySelector('.popup__close');
+
+    mapCard.classList.remove('hidden');
+    closeButton.addEventListener('click', popupClose, true);
+
+    document.addEventListener('keydown', popupEscPressHandler, true);
+  };
+
+  var popupClose = function () {
+    var mapCard = document.querySelector('.map__card');
+
+    if (mapCard) {
+      mapPinsBlock.removeChild(mapCard);
+    }
+
+    document.removeEventListener('keydown', popupEscPressHandler);
+  };
+
+  var popupEscPressHandler = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      popupClose();
     }
   };
 
@@ -64,51 +99,16 @@
     }
   };
 
-  /**
-   * Добавляет новую активную метку, убирает предыдущую.
-   * @param  {HTMLElement} currentPin
-   */
-  var activatePin = function (currentPin) {
-    var activePin = mapPinsBlock.querySelector('.map__pin--active');
-
-    if (activePin) {
-      activePin.classList.remove('map__pin--active');
-      popupClose();
-    }
-
-    currentPin.classList.add('map__pin--active');
-  };
-
-  var popupOpen = function () {
-    var mapCard = document.querySelector('.map__card');
-    var closeButton = mapCard.querySelector('.popup__close');
-
-    mapCard.classList.remove('hidden');
-    closeButton.addEventListener('click', popupClose);
-
-    document.addEventListener('keydown', popupEscPressHandler);
-  };
-
-  var popupClose = function () {
-    var mapCard = document.querySelector('.map__card');
-
-    if (mapCard) {
-      mapPinsBlock.removeChild(mapCard);
-    }
-
-    document.removeEventListener('keydown', popupEscPressHandler);
-  };
-
-  var popupEscPressHandler = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      popupClose();
-    }
-  };
-
   // Массив объектов объявлений.
   var objects = window.data.createObjects();
 
-  mainPin.addEventListener('mouseup', mouseUpHandler);
-  mapPinsBlock.addEventListener('click', pinClickHandler);
+  // Главная меткаю
+  var mainPin = document.querySelector('.map__pin--main');
+
+  // Блок меткок объектов.
+  var mapPinsBlock = document.querySelector('.map__pins');
+
+  mainPin.addEventListener('mouseup', mouseUpHandler, true);
+  mapPinsBlock.addEventListener('click', pinClickHandler, true);
 
 })();
