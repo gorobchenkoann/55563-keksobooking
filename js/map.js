@@ -162,7 +162,7 @@
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
       // Проверка попадания пина в заданые границы.
-      if ((mainPin.offsetTop - shift.y) >= PIN_CONSTRAINTS.top && (mainPin.offsetTop - shift.y) < PIN_CONSTRAINTS.bottom) {
+      if ((mainPin.offsetTop - shift.y) >= PIN_CONSTRAINTS.top && (mainPin.offsetTop - shift.y) <= PIN_CONSTRAINTS.bottom) {
         var coordY = (mainPin.offsetTop - shift.y) + (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow);
         var adressInput = document.getElementById('address');
 
