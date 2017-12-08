@@ -7,6 +7,33 @@
    */
   var ESC_KEYCODE = 27;
 
+  /**
+   * Высоты элементов главного пина.
+   * @type {Object}
+   */
+  var MAIN_PIN_HEIGHTS = {
+    circle: 52,
+    arrow: 22
+  };
+
+  /**
+   * Границы значения координаты Y.
+   * @type {Object}
+   */
+  var Y_BORDERS = {
+    top: 100,
+    bottom: 500
+  };
+
+  /**
+   * Границы значения координаты Y с учетом размеров пина.
+   * @type {Object}
+   */
+  var PIN_CONSTRAINTS = {
+    top: Y_BORDERS.top - (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow),
+    bottom: Y_BORDERS.bottom - (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow)
+  };
+
   // Делает форму и ее поля активными.
   var activateForm = function () {
     var form = document.querySelector('.notice__form');
@@ -60,10 +87,10 @@
     }
   };
 
-  var mouseUpHandler = function (evt) {
+  var pinMouseUpHandler = function (evt) {
     // Удаляет обработчик события mouseup у главной метки.
     var pin = evt.currentTarget;
-    pin.removeEventListener('mouseup', mouseUpHandler);
+    pin.removeEventListener('mouseup', pinMouseUpHandler);
 
     // Показывает блок карты.
     var mapWindow = document.querySelector('.map');
@@ -108,7 +135,55 @@
   // Блок меткок объектов.
   var mapPinsBlock = document.querySelector('.map__pins');
 
-  mainPin.addEventListener('mouseup', mouseUpHandler, true);
+  // Обработчик перетаскивания главного пина.
+  mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    // Координаты начала перетаскивания.
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var mouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      // Смещение.
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+
+      // Проверка попадания пина в заданые границы.
+      if ((mainPin.offsetTop - shift.y) >= PIN_CONSTRAINTS.top && (mainPin.offsetTop - shift.y) < PIN_CONSTRAINTS.bottom) {
+        var coordY = (mainPin.offsetTop - shift.y) + (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow);
+        var adressInput = document.getElementById('address');
+
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
+      }
+    };
+
+    var mouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', mouseMoveHandler, true);
+      document.removeEventListener('mouseup', mouseUpHandler, true);
+    };
+
+    document.addEventListener('mousemove', mouseMoveHandler, true);
+    document.addEventListener('mouseup', mouseUpHandler, true);
+
+  });
+
+  mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
   mapPinsBlock.addEventListener('click', pinClickHandler, true);
 
 })();
