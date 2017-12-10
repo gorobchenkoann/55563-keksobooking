@@ -53,7 +53,6 @@
    * @param  {HTMLElement} currentPin
    */
   var activatePin = function (currentPin) {
-    popupClose();
     currentPin.classList.add('map__pin--active');
   };
 
@@ -68,12 +67,7 @@
   };
 
   var popupClose = function () {
-    var activePin = mapPinsBlock.querySelector('.map__pin--active');
     var mapCard = document.querySelector('.map__card');
-
-     if (activePin) {
-      activePin.classList.remove('map__pin--active');
-    }
 
     if (mapCard) {
       mapPinsBlock.removeChild(mapCard);
@@ -113,10 +107,19 @@
   var pinClickHandler = function (evt) {
     var target = evt.target;
     var currentPin = target.closest('.map__pin');
+    var activePin = mapPinsBlock.querySelector('.map__pin--active');
 
+    // Убирает предыдущий активный пин, закрывает объявление.
+    if (activePin) {
+      popupClose();
+      activePin.classList.remove('map__pin--active');
+    }
+
+    // Активирует текущий пин.
     if (currentPin) {
       activatePin(currentPin);
 
+      // Открывает объявление, если кликнули не на главный пин.
       if (!currentPin.classList.contains('map__pin--main')) {
         var pinIndex = currentPin.dataset.index;
         var popup = window.card.renderPopup(objects[pinIndex]);
