@@ -38,7 +38,8 @@
   var OFFER_TYPES_RUSSIAN = {
     'flat': 'Квартира',
     'bungalo': 'Бунгало',
-    'house': 'Дом'
+    'house': 'Дом',
+    'palace': 'Дворец'
   };
 
   /**

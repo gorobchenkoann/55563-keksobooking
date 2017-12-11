@@ -9,8 +9,8 @@
   var render = (function () {
     var template = document.querySelector('template').content;
     var pin = template.querySelector('.map__pin').cloneNode(true);
-    var pinCircleHeight = 44;
-    var pinArrowHeight = 18;
+    var pinCircleHeight = 62;
+    var pinArrowHeight = 22;
 
     return function (object, index) {
       var pinElement = pin.cloneNode(true);
