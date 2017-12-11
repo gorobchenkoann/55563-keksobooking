@@ -138,7 +138,7 @@
     document.addEventListener('mousemove', mouseMoveHandler, true);
     document.addEventListener('mouseup', mouseUpHandler, true);
 
-  });
+  }, true);
 
   mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
   mapPinsBlock.addEventListener('click', pinClickHandler, true);
