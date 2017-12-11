@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+
+  var OFFER_TYPES = ['flat', 'house', 'bungalo', 'palace'];
+  var OFFER_PRICES = ['1000', '5000', '0', '10000'];
+  var OFFER_TIMES = ['12:00', '13:00', '14:00'];
+  var ROOMS_NUMBERS = ['1', '2', '3', '100'];
+  var GUESTS_NUMBERS = ['1', '2', '3', '0'];
+
   var titleInput = document.getElementById('title');
   var timeinInput = document.getElementById('timein');
   var timeoutInput = document.getElementById('timeout');
@@ -10,54 +17,38 @@
   var capacityInput = document.getElementById('capacity');
 
   /**
-   * При изменении значения первого поля, изменяет значение второго поля на такое же.
-   * @param  {[type]} firstInput
-   * @param  {[type]} secInput
-   * @return {[type]} Измененное второе поле.
+   * Устанавливает значение аттрибута value для элемента.
+   * @param  {Node} element
+   * @param  {string|number} value
    */
-  var syncInputs = function (firstInput, secInput) {
-    var firstInputValue = firstInput.value;
-    secInput.value = firstInputValue;
-
-    return secInput;
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
   /**
-   * При изменении значения первого поля, изменяет минимальное значение второго поля.
-   * @param  {[type]} type
-   * @param  {[type]} price
-   * @return {[type]} Измененное поле цены.
+   * Устанавливает значение аттрибута min для элемента.
+   * @param  {Node} element
+   * @param  {number} value
    */
-  var syncMinPrice = function (type, price) {
-    var minPrice = {
-      'bungalo': 0,
-      'flat': 1000,
-      'house': 5000,
-      'palace': 10000
-    };
-    var typeValue = type.value;
-    price.min = minPrice[typeValue];
-
-    return price;
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
   };
 
   /**
-   * При изменении значения первого поля, меняет значение второго.
-   * @param  {[type]} rooms
-   * @param  {[type]} capacity
-   * @return {[type]} Измененное значение второго поля.
+   * Устанавливает атрибут disable для неподходящих опций.
+   * @param  {Node} rooms
+   * @param  {Node} capacity
+   * @return {Node} Список опций.
    */
-  var syncCapacity = function (rooms, capacity) {
+  var disableCapacityFields = function (rooms, capacity) {
     var roomsNumber = rooms.value;
     var guestsNumbers = capacity.options;
 
     for (var i = 0; i < guestsNumbers.length; i++) {
       if (roomsNumber === '100') {
         guestsNumbers[i].disabled = guestsNumbers[i].value !== '100';
-        capacity.value = '0';
       } else {
         guestsNumbers[i].disabled = (guestsNumbers[i].value > roomsNumber || guestsNumbers[i].value === '0');
-        capacity.value = roomsNumber;
       }
     }
 
@@ -65,19 +56,20 @@
   };
 
   timeinInput.addEventListener('change', function () {
-    syncInputs(timeinInput, timeoutInput);
+    window.synchronizeFields(timeinInput, timeoutInput, OFFER_TIMES, OFFER_TIMES, syncValues);
   }, true);
 
   timeoutInput.addEventListener('change', function () {
-    syncInputs(timeoutInput, timeinInput);
+    window.synchronizeFields(timeoutInput, timeinInput, OFFER_TIMES, OFFER_TIMES, syncValues);
   }, true);
 
   typeInput.addEventListener('change', function () {
-    syncMinPrice(typeInput, priceInput);
+    window.synchronizeFields(typeInput, priceInput, OFFER_TYPES, OFFER_PRICES, syncValueWithMin);
   }, true);
 
   roomNumberInput.addEventListener('change', function () {
-    syncCapacity(roomNumberInput, capacityInput);
+    window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
+    disableCapacityFields(roomNumberInput, capacityInput);
   }, true);
 
   // Дополнительная валидация заголовка для браузеров, не поддерживающих minlength.
@@ -91,6 +83,7 @@
   }, true);
 
   // Синхронизация количества комнат и гостей.
-  syncCapacity(roomNumberInput, capacityInput);
+  window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
+  disableCapacityFields(roomNumberInput, capacityInput);
 
 })();
