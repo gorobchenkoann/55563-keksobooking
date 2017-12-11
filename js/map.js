@@ -11,7 +11,7 @@
    * Высоты элементов главного пина.
    * @type {Object}
    */
-  var mainPinHeights = {
+  var MainPinHeights = {
     CIRCLE: 62,
     ARROW: 22
   };
@@ -22,7 +22,7 @@
    * Границы значения координаты Y.
    * @type {Object}
    */
-  var yBorders = {
+  var BordersY = {
     TOP: 100,
     BOTTOM: 500
   };
@@ -32,8 +32,8 @@
    * @type {Object}
    */
   var pinConstraintsY = {
-    TOP: yBorders.TOP - (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW),
-    BOTTOM: yBorders.BOTTOM - (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW)
+    TOP: BordersY.TOP - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW),
+    BOTTOM: BordersY.BOTTOM - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
   };
 
   // Делает форму и ее поля активными.
@@ -139,14 +139,14 @@
   // Блок меткок объектов.
   var mapPinsBlock = document.querySelector('.map__pins');
 
-  var xBorders = {
+  var BordersX = {
     left: 0,
     right: mapPinsBlock.clientWidth
   };
 
-  var pinConstraintsX = {
-    left: xBorders.left + MAIN_PIN_WIDTH / 2,
-    right: xBorders.right - MAIN_PIN_WIDTH / 2
+  var PinConstraintsX = {
+    left: BordersX.left + MAIN_PIN_WIDTH / 2,
+    right: BordersX.right - MAIN_PIN_WIDTH / 2
   };
 
   // Обработчик перетаскивания главного пина.
@@ -174,18 +174,18 @@
       };
 
       // Проверка попадания пина в заданые границы по горизонтали.
-      if ((mainPin.offsetLeft - shift.x) >= pinConstraintsX.left && (mainPin.offsetLeft - shift.x) <= pinConstraintsX.right) {
+      if ((mainPin.offsetLeft - shift.x) >= PinConstraintsX.left && (mainPin.offsetLeft - shift.x) <= PinConstraintsX.right) {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
 
       // Проверка попадания пина в заданые границы по вертикали.
       if ((mainPin.offsetTop - shift.y) >= pinConstraintsY.TOP && (mainPin.offsetTop - shift.y) <= pinConstraintsY.BOTTOM) {
-        var coordY = (mainPin.offsetTop - shift.y) + (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW);
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-
-        var adressInput = document.getElementById('address');
-        adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
       }
+
+      var coordY = (mainPin.offsetTop - shift.y) + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW);
+      var adressInput = document.getElementById('address');
+      adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
     };
 
     var mouseUpHandler = function (upEvt) {
