@@ -31,7 +31,7 @@
    * Границы значения координаты Y с учетом размеров пина.
    * @type {Object}
    */
-  var pinConstraintsY = {
+  var PinConstraintsY = {
     TOP: BordersY.TOP - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW),
     BOTTOM: BordersY.BOTTOM - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
   };
@@ -179,7 +179,7 @@
       }
 
       // Проверка попадания пина в заданые границы по вертикали.
-      if ((mainPin.offsetTop - shift.y) >= pinConstraintsY.TOP && (mainPin.offsetTop - shift.y) <= pinConstraintsY.BOTTOM) {
+      if ((mainPin.offsetTop - shift.y) >= PinConstraintsY.TOP && (mainPin.offsetTop - shift.y) <= PinConstraintsY.BOTTOM) {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
 
