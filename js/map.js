@@ -11,9 +11,9 @@
    * Высоты элементов главного пина.
    * @type {Object}
    */
-  var MAIN_PIN_HEIGHTS = {
-    circle: 62,
-    arrow: 22
+  var mainPinHeights = {
+    CIRCLE: 62,
+    ARROW: 22
   };
 
   var MAIN_PIN_WIDTH = 62;
@@ -22,18 +22,18 @@
    * Границы значения координаты Y.
    * @type {Object}
    */
-  var Y_BORDERS = {
-    top: 100,
-    bottom: 500
+  var yBorders = {
+    TOP: 100,
+    BOTTOM: 500
   };
 
   /**
    * Границы значения координаты Y с учетом размеров пина.
    * @type {Object}
    */
-  var PIN_CONSTRAINTS_Y = {
-    top: Y_BORDERS.top - (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow),
-    bottom: Y_BORDERS.bottom - (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow)
+  var pinConstraintsY = {
+    TOP: yBorders.TOP - (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW),
+    BOTTOM: yBorders.BOTTOM - (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW)
   };
 
   // Делает форму и ее поля активными.
@@ -147,7 +147,7 @@
   var pinConstraintsX = {
     left: xBorders.left + MAIN_PIN_WIDTH / 2,
     right: xBorders.right - MAIN_PIN_WIDTH / 2
-  }
+  };
 
   // Обработчик перетаскивания главного пина.
   mainPin.addEventListener('mousedown', function (evt) {
@@ -179,13 +179,13 @@
       }
 
       // Проверка попадания пина в заданые границы по вертикали.
-      if ((mainPin.offsetTop - shift.y) >= PIN_CONSTRAINTS_Y.top && (mainPin.offsetTop - shift.y) <= PIN_CONSTRAINTS_Y.bottom) {
-        var coordY = (mainPin.offsetTop - shift.y) + (MAIN_PIN_HEIGHTS.circle / 2 + MAIN_PIN_HEIGHTS.arrow);
+      if ((mainPin.offsetTop - shift.y) >= pinConstraintsY.TOP && (mainPin.offsetTop - shift.y) <= pinConstraintsY.BOTTOM) {
+        var coordY = (mainPin.offsetTop - shift.y) + (mainPinHeights.CIRCLE / 2 + mainPinHeights.ARROW);
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      }
 
-      var adressInput = document.getElementById('address');
-      adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
+        var adressInput = document.getElementById('address');
+        adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
+      }
     };
 
     var mouseUpHandler = function (upEvt) {
