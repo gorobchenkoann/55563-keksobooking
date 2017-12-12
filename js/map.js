@@ -2,12 +2,6 @@
 
 (function () {
   /**
-   * Код клавиши Escape.
-   * @type {Number}
-   */
-  var ESC_KEYCODE = 27;
-
-  /**
    * Высоты элементов главного пина.
    * @type {Object}
    */
@@ -48,39 +42,6 @@
     }
   };
 
-  /**
-   * Добавляет новую активную метку, убирает предыдущую.
-   * @param  {HTMLElement} currentPin
-   */
-  var activatePin = function (currentPin) {
-    currentPin.classList.add('map__pin--active');
-  };
-
-  var popupOpen = function () {
-    var mapCard = document.querySelector('.map__card');
-    var closeButton = mapCard.querySelector('.popup__close');
-
-    mapCard.classList.remove('hidden');
-    closeButton.addEventListener('click', popupClose, true);
-
-    document.addEventListener('keydown', popupEscPressHandler, true);
-  };
-
-  var popupClose = function () {
-    var mapCard = document.querySelector('.map__card');
-
-    if (mapCard) {
-      mapPinsBlock.removeChild(mapCard);
-    }
-
-    document.removeEventListener('keydown', popupEscPressHandler);
-  };
-
-  var popupEscPressHandler = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      popupClose();
-    }
-  };
 
   var pinMouseUpHandler = function (evt) {
     // Удаляет обработчик события mouseup у главной метки.
@@ -100,34 +61,13 @@
 
   /**
    * Обработчик события нажатия на метку.
-   * Нажатие на метку с модификатором --main вызывает только ее активацию,
-   * но не появление всплывающего окна.
    * @param  {Event} evt
    */
   var pinClickHandler = function (evt) {
     var target = evt.target;
     var currentPin = target.closest('.map__pin');
-    var activePin = mapPinsBlock.querySelector('.map__pin--active');
 
-    // Убирает предыдущий активный пин, закрывает объявление.
-    if (activePin) {
-      popupClose();
-      activePin.classList.remove('map__pin--active');
-    }
-
-    // Активирует текущий пин.
-    if (currentPin) {
-      activatePin(currentPin);
-
-      // Открывает объявление, если кликнули не на главный пин.
-      if (!currentPin.classList.contains('map__pin--main')) {
-        var pinIndex = currentPin.dataset.index;
-        var popup = window.card.renderPopup(objects[pinIndex]);
-
-        mapPinsBlock.appendChild(popup);
-        popupOpen();
-      }
-    }
+    window.showCard.open(currentPin, objects);
   };
 
   // Массив объектов объявлений.
@@ -198,7 +138,7 @@
     document.addEventListener('mousemove', mouseMoveHandler, true);
     document.addEventListener('mouseup', mouseUpHandler, true);
 
-  });
+  }, true);
 
   mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
   mapPinsBlock.addEventListener('click', pinClickHandler, true);
