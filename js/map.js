@@ -67,7 +67,7 @@
     var target = evt.target;
     var currentPin = target.closest('.map__pin');
 
-    window.showCard.open(currentPin, objects);
+    window.showCard(currentPin, objects);
   };
 
   // Массив объектов объявлений.
