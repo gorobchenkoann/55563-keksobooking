@@ -140,4 +140,13 @@
 
   window.backend.load(successHandler, window.backend.errorHandler);
 
+  window.map = {
+    getMainPinCoords: function () {
+      return {
+        x: mainPin.offsetLeft,
+        y: mainPin.offsetTop + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
+      };
+    }
+  };
+
 })();
