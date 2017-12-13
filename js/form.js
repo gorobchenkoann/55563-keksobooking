@@ -8,6 +8,7 @@
   var ROOMS_NUMBERS = ['1', '2', '3', '100'];
   var GUESTS_NUMBERS = ['1', '2', '3', '0'];
 
+  var form = document.querySelector('.notice__form');
   var titleInput = document.getElementById('title');
   var timeinInput = document.getElementById('timein');
   var timeoutInput = document.getElementById('timeout');
@@ -80,6 +81,13 @@
     } else {
       target.setCustomValidity('');
     }
+  }, true);
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), function () {
+      form.reset();
+    }, window.backend.errorHandler);
+    evt.preventDefault();
   }, true);
 
   // Синхронизация количества комнат и гостей.

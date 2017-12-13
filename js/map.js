@@ -42,36 +42,34 @@
     }
   };
 
+  var successHandler = function (loadData) {
+    var objectsFragment = window.pin.show(loadData);
 
-  var pinMouseUpHandler = function (evt) {
-    // Удаляет обработчик события mouseup у главной метки.
-    var pin = evt.currentTarget;
-    pin.removeEventListener('mouseup', pinMouseUpHandler);
+    // Открытие объявлений по клику на пин.
+    mapPinsBlock.addEventListener('click', function (evt) {
+      var target = evt.target;
+      var currentPin = target.closest('.map__pin');
 
-    // Показывает блок карты.
-    var mapWindow = document.querySelector('.map');
-    mapWindow.classList.remove('map--faded');
+      window.showCard(currentPin, loadData);
+    }, true);
 
-    // Отрисовывает метки похожих объектов.
-    var objectsFragment = window.pin.show(objects);
-    mapPinsBlock.appendChild(objectsFragment);
+    var pinMouseUpHandler = function (evt) {
+      // Удаляет обработчик события mouseup у главной метки.
+      var pin = evt.currentTarget;
+      pin.removeEventListener('mouseup', pinMouseUpHandler);
 
-    activateForm();
+      // Показывает блок карты.
+      var mapWindow = document.querySelector('.map');
+      mapWindow.classList.remove('map--faded');
+
+      // Отрисовывает метки похожих объектов.
+      mapPinsBlock.appendChild(objectsFragment);
+
+      activateForm();
+    };
+
+    mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
   };
-
-  /**
-   * Обработчик события нажатия на метку.
-   * @param  {Event} evt
-   */
-  var pinClickHandler = function (evt) {
-    var target = evt.target;
-    var currentPin = target.closest('.map__pin');
-
-    window.showCard(currentPin, objects);
-  };
-
-  // Массив объектов объявлений.
-  var objects = window.data.createObjects();
 
   // Главная меткаю
   var mainPin = document.querySelector('.map__pin--main');
@@ -140,7 +138,6 @@
 
   }, true);
 
-  mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
-  mapPinsBlock.addEventListener('click', pinClickHandler, true);
+  window.backend.load(successHandler, window.backend.errorHandler);
 
 })();
