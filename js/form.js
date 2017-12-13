@@ -8,6 +8,7 @@
   var ROOMS_NUMBERS = ['1', '2', '3', '100'];
   var GUESTS_NUMBERS = ['1', '2', '3', '0'];
 
+  var form = document.querySelector('.notice__form');
   var titleInput = document.getElementById('title');
   var timeinInput = document.getElementById('timein');
   var timeoutInput = document.getElementById('timeout');
@@ -15,6 +16,7 @@
   var priceInput = document.getElementById('price');
   var roomNumberInput = document.getElementById('room_number');
   var capacityInput = document.getElementById('capacity');
+  var adressInput = document.getElementById('address');
 
   /**
    * Устанавливает значение аттрибута value для элемента.
@@ -55,6 +57,23 @@
     return capacity;
   };
 
+  /**
+   * Добавляет координаты главного пина в поле адреса.
+   * @param {Node} adressField
+   * @return {Node} Поле адреса с установленными значениями.
+   */
+  var setAdress = function (adressField) {
+    var adress = window.map.getMainPinCoords();
+    adressField.value = 'x: ' + adress.x + ', y: ' + adress.y;
+    return adressField;
+  };
+
+  var formReset = function () {
+    form.reset();
+    setAdress(adressInput);
+    window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
+  };
+
   timeinInput.addEventListener('change', function () {
     window.synchronizeFields(timeinInput, timeoutInput, OFFER_TIMES, OFFER_TIMES, syncValues);
   }, true);
@@ -80,6 +99,11 @@
     } else {
       target.setCustomValidity('');
     }
+  }, true);
+
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), formReset, window.backend.errorHandler);
+    evt.preventDefault();
   }, true);
 
   // Синхронизация количества комнат и гостей.

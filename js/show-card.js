@@ -40,31 +40,29 @@
     document.removeEventListener('keydown', popupEscPressHandler);
   };
 
-  window.showCard = {
-    open: function (currentPin, objects) {
-      var activePin = mapPinsBlock.querySelector('.map__pin--active');
+  window.showCard = function (currentPin, objects) {
+    var activePin = mapPinsBlock.querySelector('.map__pin--active');
 
-      // Закрывает предыдущее объявление, деактивирует пин.
-      if (activePin) {
-        var mapCard = document.querySelector('.map__card');
-        if (mapCard) {
-          mapPinsBlock.removeChild(mapCard);
-        }
-        activePin.classList.remove('map__pin--active');
+    // Закрывает предыдущее объявление, деактивирует пин.
+    if (activePin) {
+      var mapCard = document.querySelector('.map__card');
+      if (mapCard) {
+        mapCard.parentNode.removeChild(mapCard);
       }
+      activePin.classList.remove('map__pin--active');
+    }
 
-      // Активирует текущий пин.
-      if (currentPin) {
-        currentPin.classList.add('map__pin--active');
+    // Активирует текущий пин.
+    if (currentPin) {
+      currentPin.classList.add('map__pin--active');
 
-        // Открывает объявление, если текущий пин не главный.
-        if (!currentPin.classList.contains('map__pin--main')) {
-          var pinIndex = currentPin.dataset.index;
-          var popup = window.card.renderPopup(objects[pinIndex]);
+      // Открывает объявление, если текущий пин не главный.
+      if (!currentPin.classList.contains('map__pin--main')) {
+        var pinIndex = currentPin.dataset.index;
+        var popup = window.card.renderPopup(objects[pinIndex]);
 
-          mapPinsBlock.appendChild(popup);
-          popupOpen();
-        }
+        mapPinsBlock.appendChild(popup);
+        popupOpen();
       }
     }
   };
