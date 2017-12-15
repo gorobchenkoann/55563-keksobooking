@@ -40,8 +40,9 @@
     document.removeEventListener('keydown', popupEscPressHandler);
   };
 
-  window.showCard = function (currentPin, objects) {
+  window.showCard = function (currentPin, object) {
     var activePin = mapPinsBlock.querySelector('.map__pin--active');
+    var popup = window.card.renderPopup(object);
 
     // Закрывает предыдущее объявление, деактивирует пин.
     if (activePin) {
@@ -52,19 +53,10 @@
       activePin.classList.remove('map__pin--active');
     }
 
-    // Активирует текущий пин.
-    if (currentPin) {
-      currentPin.classList.add('map__pin--active');
+    currentPin.classList.add('map__pin--active');
+    mapPinsBlock.appendChild(popup);
+    popupOpen();
 
-      // Открывает объявление, если текущий пин не главный.
-      if (!currentPin.classList.contains('map__pin--main')) {
-        var pinIndex = currentPin.dataset.index;
-        var popup = window.card.renderPopup(objects[pinIndex]);
-
-        mapPinsBlock.appendChild(popup);
-        popupOpen();
-      }
-    }
   };
 
 })();
