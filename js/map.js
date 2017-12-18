@@ -10,6 +10,10 @@
     ARROW: 22
   };
 
+  /**
+   * Ширина главного пина.
+   * @type {Number}
+   */
   var MAIN_PIN_WIDTH = 62;
 
   /**
@@ -20,6 +24,12 @@
     TOP: 100,
     BOTTOM: 500
   };
+
+  /**
+   * Количество пинов до фильтрации.
+   * @type {Number}
+   */
+  var PIN_START_NUMBER = 3;
 
   /**
    * Границы значения координаты Y с учетом размеров пина.
@@ -42,40 +52,63 @@
     }
   };
 
-  var successHandler = function (loadData) {
-    var objectsFragment = window.pin.show(loadData);
+  // Удаляет с карты все пины, закрывает карточку объявления, если она открыта.
+  var clearMap = function () {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var card = document.querySelector('.map__card');
 
-    // Открытие объявлений по клику на пин.
-    mapPinsBlock.addEventListener('click', function (evt) {
-      var target = evt.target;
-      var currentPin = target.closest('.map__pin');
+    Array.prototype.forEach.call(pins, function (pin) {
+      mapPinsBlock.removeChild(pin);
+    });
 
-      window.showCard(currentPin, loadData);
-    }, true);
-
-    var pinMouseUpHandler = function (evt) {
-      // Удаляет обработчик события mouseup у главной метки.
-      var pin = evt.currentTarget;
-      pin.removeEventListener('mouseup', pinMouseUpHandler);
-
-      // Показывает блок карты.
-      var mapWindow = document.querySelector('.map');
-      mapWindow.classList.remove('map--faded');
-
-      // Отрисовывает метки похожих объектов.
-      mapPinsBlock.appendChild(objectsFragment);
-
-      activateForm();
-    };
-
-    mainPin.addEventListener('mouseup', pinMouseUpHandler, true);
+    if (card) {
+      mapPinsBlock.removeChild(card);
+    }
   };
+
+  // Обработчик нажатия на главный пин.
+  var mainPinMouseUpHandler = function (evt) {
+    // Удаляет обработчик события mouseup у главной метки.
+    var pin = evt.currentTarget;
+    pin.removeEventListener('mouseup', mainPinMouseUpHandler);
+
+    // Показывает блок карты.
+    var mapWindow = document.querySelector('.map');
+    mapWindow.classList.remove('map--faded');
+
+    // Отрисовывает метки похожих объектов.
+    var objectsFragment = window.pin.show(objects.slice(0, PIN_START_NUMBER));
+    mapPinsBlock.appendChild(objectsFragment);
+
+    activateForm();
+  };
+
+  /**
+   * Функция загрузки данных.
+   * @param  {Object} loadData
+   */
+  var successHandler = function (loadData) {
+    objects = loadData;
+    mainPin.addEventListener('mouseup', mainPinMouseUpHandler, true);
+  };
+
+  var filterChangeHandler = function () {
+    var pins = window.pin.filter(objects);
+    clearMap();
+    mapPinsBlock.appendChild(pins);
+  };
+
+  // Массив для загруженных объектов.
+  var objects = [];
 
   // Главная меткаю
   var mainPin = document.querySelector('.map__pin--main');
 
   // Блок меткок объектов.
   var mapPinsBlock = document.querySelector('.map__pins');
+
+  // Форма фильтров.
+  var mapFilters = document.querySelector('.map__filters');
 
   var BordersX = {
     left: 0,
@@ -86,6 +119,11 @@
     left: BordersX.left + MAIN_PIN_WIDTH / 2,
     right: BordersX.right - MAIN_PIN_WIDTH / 2
   };
+
+  // Обработчик выбора фильтров.
+  mapFilters.addEventListener('change', function () {
+    window.debounce(filterChangeHandler);
+  }, true);
 
   // Обработчик перетаскивания главного пина.
   mainPin.addEventListener('mousedown', function (evt) {
@@ -128,11 +166,13 @@
 
     var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
+      mainPin.classList.remove('map__pin--active');
 
       document.removeEventListener('mousemove', mouseMoveHandler, true);
       document.removeEventListener('mouseup', mouseUpHandler, true);
     };
 
+    mainPin.classList.add('map__pin--active');
     document.addEventListener('mousemove', mouseMoveHandler, true);
     document.addEventListener('mouseup', mouseUpHandler, true);
 
