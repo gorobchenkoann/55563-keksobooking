@@ -57,20 +57,9 @@
     return capacity;
   };
 
-  /**
-   * Добавляет координаты главного пина в поле адреса.
-   * @param {Node} adressField
-   * @return {Node} Поле адреса с установленными значениями.
-   */
-  var setAdress = function (adressField) {
-    var adress = window.map.getMainPinCoords();
-    adressField.value = 'x: ' + adress.x + ', y: ' + adress.y;
-    return adressField;
-  };
-
   var formReset = function () {
     form.reset();
-    setAdress(adressInput);
+    window.setAdress();
     window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
   };
 
