@@ -8,7 +8,7 @@
   var avatarPreview = document.querySelector('.notice__preview img');
 
   var photoDropZone = document.querySelector('.form__photo-container .drop-zone');
-  var photoFileChooser =  document.querySelector('.form__photo-container input[type="file"]');
+  var photoFileChooser = document.querySelector('.form__photo-container input[type="file"]');
   var photoPreview = document.querySelector('.form__photo-container');
 
   var loadFunction = function (evt) {

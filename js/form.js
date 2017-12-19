@@ -16,7 +16,6 @@
   var priceInput = document.getElementById('price');
   var roomNumberInput = document.getElementById('room_number');
   var capacityInput = document.getElementById('capacity');
-  var adressInput = document.getElementById('address');
 
   /**
    * Устанавливает значение аттрибута value для элемента.

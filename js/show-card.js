@@ -56,7 +56,6 @@
     currentPin.classList.add('map__pin--active');
     mapPinsBlock.appendChild(popup);
     popupOpen();
-
   };
 
 })();

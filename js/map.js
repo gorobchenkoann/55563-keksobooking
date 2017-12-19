@@ -199,7 +199,6 @@
       mainPin.style.left = (currentCoords.x) + 'px';
       mainPin.style.top = (currentCoords.y) + 'px';
 
-      var coordY = (currentCoords.y) + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW);
       setAdress();
     };
 
