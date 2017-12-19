@@ -26,11 +26,10 @@
   };
 
   /**
-   * Количество пинов до фильтрации.
+   * Максимальное количество пинов.
    * @type {Number}
    */
-  var PIN_START_NUMBER = 3;
-
+  var MAX_PIN_NUMBER = 5;
   /**
    * Границы значения координаты Y с учетом размеров пина.
    * @type {Object}
@@ -77,7 +76,7 @@
     mapWindow.classList.remove('map--faded');
 
     // Отрисовывает метки похожих объектов.
-    var objectsFragment = window.pin.show(objects.slice(0, PIN_START_NUMBER));
+    var objectsFragment = window.pin.show(objects.slice(0, MAX_PIN_NUMBER));
     mapPinsBlock.appendChild(objectsFragment);
 
     activateForm();
