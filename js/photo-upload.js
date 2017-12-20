@@ -11,7 +11,7 @@
   var photoFileChooser = document.querySelector('.form__photo-container input[type="file"]');
   var photoPreview = document.querySelector('.form__photo-container');
 
-  var loadFunction = function (evt) {
+  var fileLoadHandler = function (evt) {
     evt.preventDefault();
 
     // Обработчик загрузки аватарки.
@@ -53,8 +53,8 @@
     }
   };
 
-  avatarFileChooser.addEventListener('change', loadFunction, true);
-  photoFileChooser.addEventListener('change', loadFunction, true);
+  avatarFileChooser.addEventListener('change', fileLoadHandler, true);
+  photoFileChooser.addEventListener('change', fileLoadHandler, true);
 
   avatarDropZone.addEventListener('dragover', function (evt) {
     evt.preventDefault();
@@ -66,7 +66,7 @@
     return false;
   }, true);
 
-  avatarDropZone.addEventListener('drop', loadFunction, true);
-  photoDropZone.addEventListener('drop', loadFunction, true);
+  avatarDropZone.addEventListener('drop', fileLoadHandler, true);
+  photoDropZone.addEventListener('drop', fileLoadHandler, true);
 
 })();
