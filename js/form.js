@@ -16,6 +16,8 @@
   var priceInput = document.getElementById('price');
   var roomNumberInput = document.getElementById('room_number');
   var capacityInput = document.getElementById('capacity');
+  var description = document.getElementById('description');
+  var features = document.querySelectorAll('.features input[type="checkbox"]');
 
   /**
    * Устанавливает значение аттрибута value для элемента.
@@ -56,20 +58,31 @@
     return capacity;
   };
 
+  // Функция сброса полей формы.
   var formResetHandler = function () {
     var avatar = document.querySelector('.notice__preview img');
     var photoContainer = document.querySelector('.form__photo-container');
     var nodes = photoContainer.childNodes;
+    var childNodesNumber = 2;
 
-    // Удаляет дочерние элементы photoContainer, кроме первого.
-    for (var i = 0; i < nodes.length - 1; i++) {
+    // Удаляет дочерние элементы photoContainer, кроме области загрузки.
+    while (nodes.length > childNodesNumber) {
       photoContainer.removeChild(photoContainer.lastChild);
     }
-
     avatar.src = 'img/muffin.png';
 
-    form.reset();
+    titleInput.value = '';
+    typeInput.value = OFFER_TYPES[0];
+    timeinInput.value = OFFER_TIMES[0];
+    roomNumberInput.value = ROOMS_NUMBERS[0];
+    description.value = '';
+    Array.prototype.forEach.call(features, function (feature) {
+      feature.checked = false;
+    });
+
     window.setAdress();
+    window.synchronizeFields(timeinInput, timeoutInput, OFFER_TIMES, OFFER_TIMES, syncValues);
+    window.synchronizeFields(typeInput, priceInput, OFFER_TYPES, OFFER_PRICES, syncValueWithMin);
     window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
   };
 
@@ -103,6 +116,11 @@
   form.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(form), formResetHandler, window.backend.errorHandler);
     evt.preventDefault();
+  }, true);
+
+  form.addEventListener('reset', function (evt) {
+    evt.preventDefault();
+    formResetHandler();
   }, true);
 
   // Синхронизация количества комнат и гостей.
