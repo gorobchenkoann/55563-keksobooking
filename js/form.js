@@ -57,6 +57,17 @@
   };
 
   var formReset = function () {
+    var avatar = document.querySelector('.notice__preview img');
+    var photoContainer = document.querySelector('.form__photo-container');
+    var nodes = photoContainer.childNodes;
+
+    // Удаляет дочерние элементы photoContainer, кроме первого.
+    for (var i = 0; i < nodes.length - 1; i++) {
+      photoContainer.removeChild(photoContainer.lastChild);
+    }
+
+    avatar.src = 'img/muffin.png';
+
     form.reset();
     window.setAdress();
     window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
