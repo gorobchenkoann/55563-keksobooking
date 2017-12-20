@@ -16,7 +16,6 @@
   var priceInput = document.getElementById('price');
   var roomNumberInput = document.getElementById('room_number');
   var capacityInput = document.getElementById('capacity');
-  var adressInput = document.getElementById('address');
 
   /**
    * Устанавливает значение аттрибута value для элемента.
@@ -57,20 +56,20 @@
     return capacity;
   };
 
-  /**
-   * Добавляет координаты главного пина в поле адреса.
-   * @param {Node} adressField
-   * @return {Node} Поле адреса с установленными значениями.
-   */
-  var setAdress = function (adressField) {
-    var adress = window.map.getMainPinCoords();
-    adressField.value = 'x: ' + adress.x + ', y: ' + adress.y;
-    return adressField;
-  };
-
   var formReset = function () {
+    var avatar = document.querySelector('.notice__preview img');
+    var photoContainer = document.querySelector('.form__photo-container');
+    var nodes = photoContainer.childNodes;
+
+    // Удаляет дочерние элементы photoContainer, кроме первого.
+    for (var i = 0; i < nodes.length - 1; i++) {
+      photoContainer.removeChild(photoContainer.lastChild);
+    }
+
+    avatar.src = 'img/muffin.png';
+
     form.reset();
-    setAdress(adressInput);
+    window.setAdress();
     window.synchronizeFields(roomNumberInput, capacityInput, ROOMS_NUMBERS, GUESTS_NUMBERS, syncValues);
   };
 

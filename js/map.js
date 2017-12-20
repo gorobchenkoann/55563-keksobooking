@@ -26,11 +26,10 @@
   };
 
   /**
-   * Количество пинов до фильтрации.
+   * Максимальное количество пинов.
    * @type {Number}
    */
-  var PIN_START_NUMBER = 3;
-
+  var MAX_PIN_NUMBER = 5;
   /**
    * Границы значения координаты Y с учетом размеров пина.
    * @type {Object}
@@ -38,6 +37,28 @@
   var PinConstraintsY = {
     TOP: BordersY.TOP - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW),
     BOTTOM: BordersY.BOTTOM - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
+  };
+
+  /**
+   * Получение координат главного пина.
+   * @return {{x: number, y: number}} [description]
+   */
+  var getMainPinCoords = function () {
+    return {
+      x: mainPin.offsetLeft,
+      y: mainPin.offsetTop + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
+    };
+  };
+
+  /**
+   * Устанавливает координаты главного пина в поле адреса.
+   * @param {number} x
+   * @param {number} y
+   */
+  var setAdress = function () {
+    var adressInput = document.getElementById('address');
+    var address = getMainPinCoords();
+    adressInput.value = 'x: ' + address.x + ', y: ' + address.y;
   };
 
   // Делает форму и ее поля активными.
@@ -77,10 +98,11 @@
     mapWindow.classList.remove('map--faded');
 
     // Отрисовывает метки похожих объектов.
-    var objectsFragment = window.pin.show(objects.slice(0, PIN_START_NUMBER));
+    var objectsFragment = window.pin.show(objects.slice(0, MAX_PIN_NUMBER));
     mapPinsBlock.appendChild(objectsFragment);
 
     activateForm();
+    setAdress();
   };
 
   /**
@@ -144,24 +166,40 @@
         y: startCoords.y - moveEvt.clientY
       };
 
+      // Текущие координаты
+      var currentCoords = {
+        x: mainPin.offsetLeft - shift.x,
+        y: mainPin.offsetTop - shift.y
+      };
+
+      // Координаты начала движения
       startCoords = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
 
       // Проверка попадания пина в заданые границы по горизонтали.
-      if ((mainPin.offsetLeft - shift.x) >= PinConstraintsX.left && (mainPin.offsetLeft - shift.x) <= PinConstraintsX.right) {
-        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      if (currentCoords.x < PinConstraintsX.left) {
+        currentCoords.x = PinConstraintsX.left;
+      }
+
+      if (currentCoords.x > PinConstraintsX.right) {
+        currentCoords.x = PinConstraintsX.right;
       }
 
       // Проверка попадания пина в заданые границы по вертикали.
-      if ((mainPin.offsetTop - shift.y) >= PinConstraintsY.TOP && (mainPin.offsetTop - shift.y) <= PinConstraintsY.BOTTOM) {
-        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      if (currentCoords.y < PinConstraintsY.TOP) {
+        currentCoords.y = PinConstraintsY.TOP;
       }
 
-      var coordY = (mainPin.offsetTop - shift.y) + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW);
-      var adressInput = document.getElementById('address');
-      adressInput.value = 'x: ' + (mainPin.offsetLeft - shift.x) + ', y: ' + coordY;
+      if (currentCoords.y > PinConstraintsY.BOTTOM) {
+        currentCoords.y = PinConstraintsY.BOTTOM;
+      }
+
+      mainPin.style.left = (currentCoords.x) + 'px';
+      mainPin.style.top = (currentCoords.y) + 'px';
+
+      setAdress();
     };
 
     var mouseUpHandler = function (upEvt) {
@@ -180,13 +218,6 @@
 
   window.backend.load(successHandler, window.backend.errorHandler);
 
-  window.map = {
-    getMainPinCoords: function () {
-      return {
-        x: mainPin.offsetLeft,
-        y: mainPin.offsetTop + (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW)
-      };
-    }
-  };
+  window.setAdress = setAdress;
 
 })();

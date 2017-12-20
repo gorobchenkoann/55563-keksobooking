@@ -60,16 +60,20 @@
 
     errorHandler: function (errorMessage) {
       var node = document.createElement('div');
-      node.style = 'z-index: 100; padding: 50px; margin: 10px auto; text-align: center; background-color: white; border: 2px solid red;';
-      node.style.position = 'absolute';
-      node.style.left = 0;
-      node.style.right = 0;
+      node.style = 'z-index: 100; padding: 50px; transform: translate(-50%, -50%); text-align: center; background-color: white; border: 4px solid red; border-radius: 10px';
+      node.style.position = 'fixed';
+      node.style.left = '50%';
+      node.style.top = '50%';
       node.style.width = '300px';
-      node.style.height = '100px';
+      node.style.height = '40px';
       node.style.fontSize = '30px';
 
       node.textContent = errorMessage;
       document.body.insertAdjacentElement('afterbegin', node);
+
+      setTimeout(function () {
+        node.parentNode.removeChild(node);
+      }, 1000);
     }
   };
 })();
