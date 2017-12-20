@@ -56,7 +56,7 @@
     return capacity;
   };
 
-  var formReset = function () {
+  var formResetHandler = function () {
     var avatar = document.querySelector('.notice__preview img');
     var photoContainer = document.querySelector('.form__photo-container');
     var nodes = photoContainer.childNodes;
@@ -101,7 +101,7 @@
   }, true);
 
   form.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(form), formReset, window.backend.errorHandler);
+    window.backend.save(new FormData(form), formResetHandler, window.backend.errorHandler);
     evt.preventDefault();
   }, true);
 
