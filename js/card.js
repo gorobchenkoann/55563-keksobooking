@@ -9,9 +9,9 @@
   var renderFeatures = function (features) {
     var featuresList = '';
 
-    for (var i = 0; i < features.length; i++) {
-      featuresList += '<li class="feature feature--' + features[i] + '"></li>';
-    }
+    features.forEach(function (feature) {
+      featuresList += '<li class="feature feature--' + feature + '"></li>';
+    });
 
     return featuresList;
   };
@@ -22,23 +22,25 @@
      * @param  {Object} object
      * @return {Node} DOM-узел описания объекта.
      */
-    renderOffer: function (object) {
+    renderOffer: (function () {
       var template = document.querySelector('template').content;
       var offerArticle = template.querySelector('.map__card').cloneNode(true);
 
-      offerArticle.querySelector('h3').textContent = object.offer.title;
-      offerArticle.querySelector('p').textContent = object.offer.address;
-      offerArticle.querySelector('.popup__price').textContent = object.offer.price + '\t\u20BD/ночь';
-      offerArticle.querySelector('h4').textContent = object.offer.type;
-      offerArticle.querySelector('p:nth-of-type(3)').textContent = object.offer.rooms + ' для ' + object.offer.guests + ' гостей';
-      offerArticle.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
-      offerArticle.querySelector('.popup__features').innerHTML = renderFeatures(object.offer.features);
-      offerArticle.querySelector('p:nth-of-type(5)').textContent = object.offer.description;
-      offerArticle.querySelector('.popup__avatar').src = object.author.avatar;
-      offerArticle.classList.add('hidden');
+      return function (object) {
+        offerArticle.querySelector('h3').textContent = object.offer.title;
+        offerArticle.querySelector('p').textContent = object.offer.address;
+        offerArticle.querySelector('.popup__price').textContent = object.offer.price + '\t\u20BD/ночь';
+        offerArticle.querySelector('h4').textContent = object.offer.type;
+        offerArticle.querySelector('p:nth-of-type(3)').textContent = object.offer.rooms + ' для ' + object.offer.guests + ' гостей';
+        offerArticle.querySelector('p:nth-of-type(4)').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
+        offerArticle.querySelector('.popup__features').innerHTML = renderFeatures(object.offer.features);
+        offerArticle.querySelector('p:nth-of-type(5)').textContent = object.offer.description;
+        offerArticle.querySelector('.popup__avatar').src = object.author.avatar;
+        offerArticle.classList.add('hidden');
 
-      return offerArticle;
-    },
+        return offerArticle;
+      };
+    })(),
 
     /**
      * Создает фрагмент описания объекта.

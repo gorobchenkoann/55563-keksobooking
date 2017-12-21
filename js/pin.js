@@ -7,6 +7,24 @@
  */
   var MAX_PIN_NUMBER = 5;
 
+  var FEATURE_VALUE_LENGTH = 7;
+
+  var ANY_VALUE = 'any';
+
+  var Prices = {
+    MIN: 10000,
+    MAX: 50000
+  };
+
+  /**
+   * Высоты элементов главного пина.
+   * @type {Object}
+   */
+  var MainPinHeights = {
+    CIRCLE: 62,
+    ARROW: 22
+  };
+
   /**
    * Функция фильтрации объектов по значению.
    * @param  {Array} arr         Массив объектов.
@@ -16,11 +34,7 @@
    */
   var filterByValue = function (arr, filterField, type) {
     arr = arr.filter(function (obj) {
-      if (filterField.value === 'any') {
-        return true;
-      } else {
-        return obj.offer[type].toString() === filterField.value;
-      }
+      return (filterField.value === ANY_VALUE) || (obj.offer[type].toString() === filterField.value);
     });
 
     return arr;
@@ -37,11 +51,11 @@
     arr = arr.filter(function (obj) {
       switch (filterField.value) {
         case 'low':
-          return obj.offer[type] <= 10000;
+          return obj.offer[type] <= Prices.MIN;
         case 'middle':
-          return obj.offer[type] > 10000 && obj.offer[type] < 50000;
+          return obj.offer[type] > Prices.MIN && obj.offer[type] < Prices.MAX;
         case 'high':
-          return obj.offer[type] >= 50000;
+          return obj.offer[type] >= Prices.MAX;
         default:
           return true;
       }
@@ -59,7 +73,7 @@
   var filterFeatures = function (arr, filterFields) {
     filterFields.forEach(function (item) {
       if (item.checked) {
-        var value = item.id.slice(7);
+        var value = item.id.slice(FEATURE_VALUE_LENGTH);
 
         arr = arr.filter(function (obj) {
           return obj.offer['features'].indexOf(value) > -1;
@@ -78,14 +92,12 @@
   var render = (function () {
     var template = document.querySelector('template').content;
     var pin = template.querySelector('.map__pin').cloneNode(true);
-    var pinCircleHeight = 62;
-    var pinArrowHeight = 22;
 
     return function (object) {
       var pinElement = pin.cloneNode(true);
 
       pinElement.style.left = object.location.x + 'px';
-      pinElement.style.top = object.location.y - (pinCircleHeight / 2 + pinArrowHeight) + 'px';
+      pinElement.style.top = object.location.y - (MainPinHeights.CIRCLE / 2 + MainPinHeights.ARROW) + 'px';
       pinElement.querySelector('img').src = object.author.avatar;
 
       pinElement.addEventListener('click', function (evt) {
@@ -104,11 +116,11 @@
      * @return {HTMLElement} DocumentFragment с метками.
      */
     filter: function (objects) {
-      var typeFilter = document.getElementById('housing-type');
-      var priceFilter = document.getElementById('housing-price');
-      var roomsFilter = document.getElementById('housing-rooms');
-      var guestsFilter = document.getElementById('housing-guests');
-      var featuresField = document.getElementById('housing-features');
+      var typeFilter = document.querySelector('#housing-type');
+      var priceFilter = document.querySelector('#housing-price');
+      var roomsFilter = document.querySelector('#housing-rooms');
+      var guestsFilter = document.querySelector('#housing-guests');
+      var featuresField = document.querySelector('#housing-features');
       var featuresFilter = featuresField.querySelectorAll('input[name="features"');
 
       var filteredPins = objects;
@@ -137,9 +149,9 @@
     show: function (objects) {
       var fragment = document.createDocumentFragment();
 
-      for (var i = 0; i < objects.length; i++) {
-        fragment.appendChild(render(objects[i]));
-      }
+      objects.forEach(function (object) {
+        fragment.appendChild(render(object));
+      });
 
       return fragment;
     }

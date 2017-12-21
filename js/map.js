@@ -56,7 +56,7 @@
    * @param {number} y
    */
   var setAdress = function () {
-    var adressInput = document.getElementById('address');
+    var adressInput = document.querySelector('#address');
     var address = getMainPinCoords();
     adressInput.value = 'x: ' + address.x + ', y: ' + address.y;
   };
@@ -68,9 +68,9 @@
 
     form.classList.remove('notice__form--disabled');
 
-    for (var i = 0; i < fieldsets.length; i++) {
-      fieldsets[i].disabled = false;
-    }
+    Array.prototype.forEach.call(fieldsets, function (fieldset) {
+      fieldset.disabled = false;
+    });
   };
 
   // Удаляет с карты все пины, закрывает карточку объявления, если она открыта.

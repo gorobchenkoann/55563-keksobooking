@@ -7,16 +7,18 @@
   var OFFER_TIMES = ['12:00', '13:00', '14:00'];
   var ROOMS_NUMBERS = ['1', '2', '3', '100'];
   var GUESTS_NUMBERS = ['1', '2', '3', '0'];
+  var CHILD_NODES_NUMBER = 2;
+  var MIN_STRING_LENGTH = 30;
 
   var form = document.querySelector('.notice__form');
-  var titleInput = document.getElementById('title');
-  var timeinInput = document.getElementById('timein');
-  var timeoutInput = document.getElementById('timeout');
-  var typeInput = document.getElementById('type');
-  var priceInput = document.getElementById('price');
-  var roomNumberInput = document.getElementById('room_number');
-  var capacityInput = document.getElementById('capacity');
-  var description = document.getElementById('description');
+  var titleInput = document.querySelector('#title');
+  var timeinInput = document.querySelector('#timein');
+  var timeoutInput = document.querySelector('#timeout');
+  var typeInput = document.querySelector('#type');
+  var priceInput = document.querySelector('#price');
+  var roomNumberInput = document.querySelector('#room_number');
+  var capacityInput = document.querySelector('#capacity');
+  var description = document.querySelector('#description');
   var features = document.querySelectorAll('.features input[type="checkbox"]');
 
   /**
@@ -48,10 +50,10 @@
     var guestsNumbers = capacity.options;
 
     for (var i = 0; i < guestsNumbers.length; i++) {
-      if (roomsNumber === '100') {
-        guestsNumbers[i].disabled = guestsNumbers[i].value !== '100';
+      if (roomsNumber === ROOMS_NUMBERS[3]) {
+        guestsNumbers[i].disabled = guestsNumbers[i].value !== GUESTS_NUMBERS[3];
       } else {
-        guestsNumbers[i].disabled = (guestsNumbers[i].value > roomsNumber || guestsNumbers[i].value === '0');
+        guestsNumbers[i].disabled = (guestsNumbers[i].value > roomsNumber || guestsNumbers[i].value === GUESTS_NUMBERS[3]);
       }
     }
 
@@ -63,10 +65,9 @@
     var avatar = document.querySelector('.notice__preview img');
     var photoContainer = document.querySelector('.form__photo-container');
     var nodes = photoContainer.childNodes;
-    var childNodesNumber = 2;
 
     // Удаляет дочерние элементы photoContainer, кроме области загрузки.
-    while (nodes.length > childNodesNumber) {
+    while (nodes.length > CHILD_NODES_NUMBER) {
       photoContainer.removeChild(photoContainer.lastChild);
     }
     avatar.src = 'img/muffin.png';
@@ -106,7 +107,7 @@
   // Дополнительная валидация заголовка для браузеров, не поддерживающих minlength.
   titleInput.addEventListener('input', function (evt) {
     var target = evt.target;
-    if (target.value.length < 30) {
+    if (target.value.length < MIN_STRING_LENGTH) {
       target.setCustomValidity('Минимально допустимое количество символов: 30. Длина текста сейчас: ' + target.value.length + '.');
     } else {
       target.setCustomValidity('');
