@@ -9,6 +9,13 @@
 
   var FEATURE_VALUE_LENGTH = 7;
 
+  var ANY_VALUE = 'any';
+
+  var Prices = {
+    MIN: 10000,
+    MAX: 50000
+  }
+
   /**
    * Высоты элементов главного пина.
    * @type {Object}
@@ -27,7 +34,7 @@
    */
   var filterByValue = function (arr, filterField, type) {
     arr = arr.filter(function (obj) {
-      return (filterField.value === 'any') || (obj.offer[type].toString() === filterField.value);
+      return (filterField.value === ANY_VALUE) || (obj.offer[type].toString() === filterField.value);
     });
 
     return arr;
@@ -44,11 +51,11 @@
     arr = arr.filter(function (obj) {
       switch (filterField.value) {
         case 'low':
-          return obj.offer[type] <= 10000;
+          return obj.offer[type] <= Prices.MIN;
         case 'middle':
-          return obj.offer[type] > 10000 && obj.offer[type] < 50000;
+          return obj.offer[type] > Prices.MIN && obj.offer[type] < Prices.MAX;
         case 'high':
-          return obj.offer[type] >= 50000;
+          return obj.offer[type] >= Prices.MAX;
         default:
           return true;
       }
